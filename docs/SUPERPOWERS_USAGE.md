@@ -29,8 +29,11 @@ The local Codex Superpowers plugin exposes workflow skills including:
 - `writing-plans`: used to shape the implementation plan.
 - `systematic-debugging`: used to diagnose the local Git-to-GitHub network failure.
 - `executing-plans`: used to start the approved execution loop.
-- `test-driven-development`: active implementation constraint for behavior changes.
+- `test-driven-development`: used for behavior changes, including the material-update ownership guard where the regression test failed before implementation and passed afterward.
 - `verification-before-completion`: active verification constraint before claiming completion.
+- `systematic-debugging`: used again in final validation to diagnose the Windows Prisma DLL file-lock build failure and the Playwright selector ambiguity.
+- `requesting-code-review`: reviewed before finalization; subagent dispatch was not used because the current multi-agent tool policy only permits spawning subagents when the user explicitly asks for delegation.
+- `finishing-a-development-branch`: used for the final push and PR-preparation flow after verification.
 
 ## CLI Limitation And Replacement Flow
 

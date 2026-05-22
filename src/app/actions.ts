@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { recordAuditLog } from "@/lib/audit";
 import { importDemoCase } from "@/lib/demo-cases";
 import { prisma } from "@/lib/db";
-import { importTextMaterial, toMaterialType } from "@/lib/material-service";
+import { importTextMaterial, toMaterialType, updateTextMaterial } from "@/lib/material-service";
 import { addEvidenceEvent, toEvidenceEventType } from "@/lib/evidence-service";
 import { saveReviewDecision, toReviewDecision } from "@/lib/review-service";
 import { exportOrderReport } from "@/lib/report-service";
@@ -54,6 +54,18 @@ export async function importMaterialAction(formData: FormData) {
     actorRole: "业务员"
   });
 
+  revalidatePath(`/orders/${orderId}`);
+}
+
+export async function updateMaterialAction(formData: FormData) {
+  const orderId = readString(formData, "orderId");
+  await updateTextMaterial(prisma, {
+    materialId: readString(formData, "materialId"),
+    orderId,
+    title: readString(formData, "title"),
+    content: readString(formData, "content"),
+    actorRole: "业务员"
+  });
   revalidatePath(`/orders/${orderId}`);
 }
 

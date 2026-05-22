@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { addEvidenceEventAction, exportReportAction, importMaterialAction, saveReviewAction, scanOrderAction } from "@/app/actions";
+import { addEvidenceEventAction, exportReportAction, importMaterialAction, saveReviewAction, scanOrderAction, updateMaterialAction } from "@/app/actions";
 import { getAiProviderStatus } from "@/lib/ai-provider";
 import { getOrderSpace } from "@/lib/order-queries";
 
@@ -150,6 +150,36 @@ Purchase order without governing law or dispute resolution.`}
             ))}
           </tbody>
         </table>
+        <div className="stack" style={{ marginTop: 16 }}>
+          {order.materials.map((material) => (
+            <form
+              action={updateMaterialAction}
+              className="panel stack"
+              data-material-title={material.title}
+              data-testid="material-edit-form"
+              key={`edit-${material.id}`}
+            >
+              <input type="hidden" name="orderId" value={order.id} />
+              <input type="hidden" name="materialId" value={material.id} />
+              <div className="field">
+                <label htmlFor={`title-${material.id}`}>编辑材料标题</label>
+                <input id={`title-${material.id}`} name="title" defaultValue={material.title} />
+              </div>
+              <div className="field">
+                <label htmlFor={`content-${material.id}`}>编辑材料正文</label>
+                <textarea
+                  data-testid="material-content-editor"
+                  id={`content-${material.id}`}
+                  name="content"
+                  defaultValue={material.content}
+                />
+              </div>
+              <button className="button secondary" type="submit">
+                保存材料修改
+              </button>
+            </form>
+          ))}
+        </div>
       </section>
 
       <section className="panel">
