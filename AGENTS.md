@@ -5,6 +5,8 @@ This repository is governed by `docs/CODEX_MISSION.md`.
 ## Language
 
 All user-facing replies must be written in Chinese by default unless the user explicitly asks for another language.
+This includes progress updates, status messages, plan updates, tool-running explanations, final answers, and handoff notes.
+English is allowed only for code, commands, file paths, API names, branch names, package names, quoted error messages, or text the user explicitly asks to keep in English.
 
 ## Current Execution Gate
 
