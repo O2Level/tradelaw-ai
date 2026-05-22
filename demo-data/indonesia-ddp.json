@@ -1,0 +1,13 @@
+{
+  "caseId": "indonesia-ddp",
+  "name": "Indonesia Buyer DDP - Clearance Risk",
+  "destinationCountry": "Indonesia",
+  "buyerName": "Jakarta Retail Group",
+  "sellerName": "Ningbo Homeware Export Ltd.",
+  "product": "Kitchen storage boxes",
+  "amount": 86000,
+  "currency": "USD",
+  "incoterm": "DDP Jakarta",
+  "paymentTerms": "40% deposit, 60% before delivery",
+  "deliveryDate": "2026-08-15"
+}

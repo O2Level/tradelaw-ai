@@ -29,8 +29,11 @@ The local Codex Superpowers plugin exposes workflow skills including:
 - `writing-plans`: used to shape the implementation plan.
 - `systematic-debugging`: used to diagnose the local Git-to-GitHub network failure.
 - `executing-plans`: used to start the approved execution loop.
-- `test-driven-development`: active implementation constraint for behavior changes.
+- `test-driven-development`: used for behavior changes, including the material-update ownership guard where the regression test failed before implementation and passed afterward.
 - `verification-before-completion`: active verification constraint before claiming completion.
+- `systematic-debugging`: used again in final validation to diagnose the Windows Prisma DLL file-lock build failure and the Playwright selector ambiguity.
+- `requesting-code-review`: reviewed before finalization; subagent dispatch was not used because the current multi-agent tool policy only permits spawning subagents when the user explicitly asks for delegation.
+- `finishing-a-development-branch`: used for the final push and PR-preparation flow after verification.
 
 ## CLI Limitation And Replacement Flow
 
@@ -40,3 +43,10 @@ Because no usable Superpowers CLI is available, the project will use Codex-loade
 
 - Code review will use available Codex/GitHub tooling or a manual review checklist if no subagent review path is available.
 - Final PR creation will prefer local GitHub tooling if it becomes available; otherwise the final handoff will include PR title, body, branch, and commit status.
+
+## Round 9 OpenClaw Boundary
+
+- OpenClaw was only treated as an environment-configured provider.
+- The project does not read, copy, parse, or commit `~/.openclaw/openclaw.json`.
+- Runtime AI configuration is limited to `.env` variables documented in `.env.example`.
+- If OpenClaw configuration is incomplete or a compatible API call fails, the UI remains usable in local rules mode.

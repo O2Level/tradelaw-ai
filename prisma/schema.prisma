@@ -1,0 +1,211 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Reviewer {
+  id              String           @id @default(cuid())
+  name            String
+  role            String
+  createdAt       DateTime         @default(now())
+  reviewDecisions ReviewDecision[]
+}
+
+model Order {
+  id                 String           @id @default(cuid())
+  name               String
+  buyerName          String
+  sellerName         String
+  destinationCountry String
+  product            String
+  amount             Float
+  currency           String           @default("USD")
+  incoterm           String?
+  paymentTerms       String?
+  deliveryDate       String?
+  riskLevel          RiskSeverity     @default(GREEN)
+  reviewStatus       ReviewStatus     @default(NONE)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  materials          Material[]
+  extractedFields    ExtractedField[]
+  riskItems          RiskItem[]
+  evidenceEvents     EvidenceEvent[]
+  reportExports      ReportExport[]
+}
+
+model Material {
+  id              String           @id @default(cuid())
+  orderId         String
+  order           Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type            MaterialType
+  title           String
+  content         String
+  sourceFilename  String?
+  sensitivityNote String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  extractedFields ExtractedField[]
+  riskItems       RiskItem[]
+}
+
+model ExtractedField {
+  id               String    @id @default(cuid())
+  orderId          String
+  order            Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  sourceMaterialId String?
+  sourceMaterial   Material? @relation(fields: [sourceMaterialId], references: [id], onDelete: SetNull)
+  fieldKey         String
+  fieldValue       String
+  evidenceText     String?
+  confidence       Float     @default(0.8)
+  createdAt        DateTime  @default(now())
+}
+
+model RiskRule {
+  id                  String       @id @default(cuid())
+  ruleId              String       @unique
+  riskType            String
+  scenario            String
+  trigger             String
+  severity            RiskSeverity
+  businessExplanation String
+  suggestedRevision   String
+  requiredMaterials   String
+  requiresHumanReview Boolean
+  source              String
+  lastUpdated         DateTime
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  riskItems           RiskItem[]
+}
+
+model RiskItem {
+  id                  String           @id @default(cuid())
+  orderId             String
+  order               Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  riskRuleId          String
+  riskRule            RiskRule         @relation(fields: [riskRuleId], references: [id])
+  materialId          String?
+  material            Material?        @relation(fields: [materialId], references: [id], onDelete: SetNull)
+  originalText        String
+  riskType            String
+  severity            RiskSeverity
+  businessExplanation String
+  suggestedRevision   String
+  requiredMaterials   String
+  requiresHumanReview Boolean
+  ruleSource          String
+  status              RiskStatus       @default(OPEN)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  reviewDecisions     ReviewDecision[]
+}
+
+model ReviewDecision {
+  id           String    @id @default(cuid())
+  riskItemId   String
+  riskItem     RiskItem  @relation(fields: [riskItemId], references: [id], onDelete: Cascade)
+  reviewerId   String?
+  reviewer     Reviewer? @relation(fields: [reviewerId], references: [id], onDelete: SetNull)
+  reviewerName String
+  reviewerRole String
+  decision     String
+  comment      String
+  version      Int       @default(1)
+  createdAt    DateTime  @default(now())
+}
+
+model EvidenceEvent {
+  id                String            @id @default(cuid())
+  orderId           String
+  order             Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type              EvidenceEventType
+  title             String
+  eventDate         DateTime?
+  uploadedMaterials String
+  missingMaterials  String
+  proofTarget       String
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model ReportExport {
+  id        String     @id @default(cuid())
+  orderId   String
+  order     Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type      ReportType
+  filePath  String
+  createdBy String
+  createdAt DateTime   @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorRole  String
+  action     String
+  entityType String
+  entityId   String
+  summary    String
+  metadata   String?
+  createdAt  DateTime @default(now())
+}
+
+enum RiskSeverity {
+  GREEN
+  YELLOW
+  RED
+}
+
+enum ReviewStatus {
+  NONE
+  PENDING
+  IN_REVIEW
+  RESOLVED
+}
+
+enum MaterialType {
+  CONTRACT
+  PO
+  PI
+  CHAT_SUMMARY
+  INVOICE
+  PACKING_LIST
+  BILL_OF_LADING
+  INSPECTION_REPORT
+  RECEIPT_CONFIRMATION
+  OTHER
+}
+
+enum RiskStatus {
+  OPEN
+  IN_REVIEW
+  ACCEPTED
+  REQUIRE_MODIFICATION
+  CLAUSE_ADDED
+  PAUSED
+  ESCALATED_TO_LAWYER
+  RESOLVED
+}
+
+enum EvidenceEventType {
+  SIGNING
+  PRODUCTION
+  INSPECTION
+  SHIPMENT
+  PAYMENT
+  OBJECTION
+  COLLECTION
+  OTHER
+}
+
+enum ReportType {
+  SALES
+  OWNER
+  LEGAL
+  EVIDENCE
+}

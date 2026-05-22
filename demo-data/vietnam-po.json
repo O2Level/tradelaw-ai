@@ -1,0 +1,13 @@
+{
+  "caseId": "vietnam-po",
+  "name": "Vietnam Buyer PO - Arrival Balance Risk",
+  "destinationCountry": "Vietnam",
+  "buyerName": "VietHome Trading Co., Ltd.",
+  "sellerName": "Shenzhen Bright Export Ltd.",
+  "product": "LED lamps",
+  "amount": 48000,
+  "currency": "USD",
+  "incoterm": "FOB Shenzhen",
+  "paymentTerms": "30% deposit, 70% balance paid after arrival and buyer inspection",
+  "deliveryDate": "2026-07-30"
+}
