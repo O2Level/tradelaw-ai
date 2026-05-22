@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { recordAuditLog } from "@/lib/audit";
+import { importDemoCase } from "@/lib/demo-cases";
 import { prisma } from "@/lib/db";
 import { importTextMaterial, toMaterialType } from "@/lib/material-service";
 import { addEvidenceEvent, toEvidenceEventType } from "@/lib/evidence-service";
@@ -112,4 +113,15 @@ export async function exportReportAction(formData: FormData) {
   });
   revalidatePath(`/orders/${orderId}`);
   revalidatePath("/reports");
+}
+
+export async function importDemoCaseAction(formData: FormData) {
+  const caseId = readString(formData, "caseId");
+  const order = await importDemoCase(
+    prisma,
+    caseId === "indonesia-ddp" || caseId === "malaysia-quality" ? caseId : "vietnam-po"
+  );
+  revalidatePath("/");
+  revalidatePath("/orders");
+  redirect(`/orders/${order.id}`);
 }

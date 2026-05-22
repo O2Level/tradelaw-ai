@@ -1,0 +1,13 @@
+{
+  "caseId": "malaysia-quality",
+  "name": "Malaysia Quality Objection - Evidence Gap",
+  "destinationCountry": "Malaysia",
+  "buyerName": "MY Home Supply Sdn. Bhd.",
+  "sellerName": "Foshan Fixtures Export Ltd.",
+  "product": "Bathroom fixtures",
+  "amount": 62000,
+  "currency": "USD",
+  "incoterm": "CIF Port Klang",
+  "paymentTerms": "30% deposit, unpaid balance after receipt confirmation",
+  "deliveryDate": "2026-06-20"
+}

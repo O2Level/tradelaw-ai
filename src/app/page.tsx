@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { importDemoCaseAction } from "@/app/actions";
 import { getDashboardStats } from "@/lib/order-queries";
 
 export const dynamic = "force-dynamic";
@@ -26,9 +27,23 @@ export default async function DashboardPage() {
       <section className="panel" style={{ marginTop: 16 }}>
         <h2>演示入口</h2>
         <p>从订单建档开始，导入材料后即可执行本地规则扫描。</p>
-        <Link className="button" href="/orders">
-          查看订单
-        </Link>
+        <div className="toolbar">
+          {[
+            ["vietnam-po", "导入越南 PO"],
+            ["indonesia-ddp", "导入印尼 DDP"],
+            ["malaysia-quality", "导入马来西亚质量异议"]
+          ].map(([caseId, label]) => (
+            <form action={importDemoCaseAction} key={caseId}>
+              <input type="hidden" name="caseId" value={caseId} />
+              <button className="button" type="submit">
+                {label}
+              </button>
+            </form>
+          ))}
+          <Link className="button secondary" href="/orders">
+            查看订单
+          </Link>
+        </div>
       </section>
     </>
   );
