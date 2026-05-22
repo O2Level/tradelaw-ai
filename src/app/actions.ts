@@ -7,6 +7,8 @@ import { prisma } from "@/lib/db";
 import { importTextMaterial, toMaterialType } from "@/lib/material-service";
 import { addEvidenceEvent, toEvidenceEventType } from "@/lib/evidence-service";
 import { saveReviewDecision, toReviewDecision } from "@/lib/review-service";
+import { exportOrderReport } from "@/lib/report-service";
+import type { ReportTypeValue } from "@/lib/report-generator";
 import { scanOrderRisks } from "@/lib/scan-service";
 
 function readString(formData: FormData, key: string) {
@@ -95,4 +97,19 @@ export async function addEvidenceEventAction(formData: FormData) {
     actorRole: "跟单"
   });
   revalidatePath(`/orders/${orderId}`);
+}
+
+function toReportType(value: string): ReportTypeValue {
+  return value === "SALES" || value === "OWNER" || value === "LEGAL" || value === "EVIDENCE" ? value : "OWNER";
+}
+
+export async function exportReportAction(formData: FormData) {
+  const orderId = readString(formData, "orderId");
+  await exportOrderReport(prisma, {
+    orderId,
+    type: toReportType(readString(formData, "type")),
+    createdBy: readString(formData, "createdBy") || "负责人"
+  });
+  revalidatePath(`/orders/${orderId}`);
+  revalidatePath("/reports");
 }

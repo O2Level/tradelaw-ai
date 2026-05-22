@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { addEvidenceEventAction, importMaterialAction, saveReviewAction, scanOrderAction } from "@/app/actions";
+import { addEvidenceEventAction, exportReportAction, importMaterialAction, saveReviewAction, scanOrderAction } from "@/app/actions";
 import { getOrderSpace } from "@/lib/order-queries";
 
 export const dynamic = "force-dynamic";
@@ -291,6 +291,45 @@ Purchase order without governing law or dispute resolution.`}
                 <td>{event.title}</td>
                 <td>{event.proofTarget}</td>
                 <td>{JSON.parse(event.missingMaterials).join("、")}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section className="panel stack">
+        <h2>报告导出</h2>
+        <div className="toolbar">
+          {[
+            ["SALES", "业务员版"],
+            ["OWNER", "负责人版"],
+            ["LEGAL", "法务版"],
+            ["EVIDENCE", "证据包摘要"]
+          ].map(([type, label]) => (
+            <form action={exportReportAction} key={type}>
+              <input type="hidden" name="orderId" value={order.id} />
+              <input type="hidden" name="type" value={type} />
+              <input type="hidden" name="createdBy" value={label} />
+              <button className="button secondary" type="submit">
+                导出{label}
+              </button>
+            </form>
+          ))}
+        </div>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>类型</th>
+              <th>文件</th>
+              <th>时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            {order.reportExports.map((report) => (
+              <tr key={report.id}>
+                <td>{report.type}</td>
+                <td>{report.filePath}</td>
+                <td>{report.createdAt.toLocaleString("zh-CN")}</td>
               </tr>
             ))}
           </tbody>
