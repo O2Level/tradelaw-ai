@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+demo-output/
+.env
+*.db
+*.db-journal
+*.log
