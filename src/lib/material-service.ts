@@ -3,12 +3,31 @@ import { extractOrderFields, toExtractedFieldRows } from "./extraction";
 
 const sensitivityNote = "请先脱敏客户个人信息、私人联系方式和非必要商业秘密。";
 
+export const materialTypes = [
+  "CONTRACT",
+  "PO",
+  "PI",
+  "CHAT_SUMMARY",
+  "INVOICE",
+  "PACKING_LIST",
+  "BILL_OF_LADING",
+  "INSPECTION_REPORT",
+  "RECEIPT_CONFIRMATION",
+  "OTHER"
+] as const;
+
+export type MaterialTypeValue = (typeof materialTypes)[number];
+
+export function toMaterialType(value: string): MaterialTypeValue {
+  return materialTypes.includes(value as MaterialTypeValue) ? (value as MaterialTypeValue) : "OTHER";
+}
+
 type MaterialPrisma = {
   material: {
     create: (args: {
       data: {
         orderId: string;
-        type: string;
+        type: MaterialTypeValue;
         title: string;
         content: string;
         sensitivityNote: string;
@@ -34,7 +53,7 @@ type MaterialPrisma = {
 
 export type ImportTextMaterialInput = {
   orderId: string;
-  type: string;
+  type: MaterialTypeValue;
   title: string;
   content: string;
   actorRole: string;
