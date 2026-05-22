@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../src/lib/db";
 
 async function main() {
   await prisma.reviewer.upsert({
@@ -10,6 +8,16 @@ async function main() {
       id: "default-reviewer",
       name: "默认复核人",
       role: "法务"
+    }
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorRole: "system",
+      action: "SEED",
+      entityType: "Reviewer",
+      entityId: "default-reviewer",
+      summary: "Seeded default reviewer"
     }
   });
 }

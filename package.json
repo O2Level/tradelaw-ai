@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "e2e": "playwright test",
-    "db:reset": "prisma migrate reset --force --skip-seed",
+    "db:reset": "tsx scripts/db-reset.ts",
     "seed": "tsx prisma/seed.ts",
     "demo:import": "tsx scripts/demo-import.ts",
     "demo:vietnam": "tsx scripts/demo-vietnam.ts",
