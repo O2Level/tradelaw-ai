@@ -76,7 +76,7 @@ export async function exportOrderReport(
 ) {
   const data = await buildReportData(prisma, input.orderId, input.type);
   const buffer = await generateReportPdfBuffer(data);
-  const outputDir = input.outputDir ?? join(process.cwd(), "demo-output");
+  const outputDir = input.outputDir ?? join(/* turbopackIgnore: true */ process.cwd(), "demo-output");
   mkdirSync(outputDir, { recursive: true });
   const filePath = join(outputDir, reportFileName(data.order.name, input.type));
   writeFileSync(filePath, buffer);
