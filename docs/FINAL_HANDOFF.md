@@ -42,7 +42,9 @@ npm run qa
 
 标题：`Build TradeLaw AI MVP Web Workbench`
 
-状态：已推送到 `origin/feature/tradelaw-ai-mvp`。GitHub connector 创建 PR 时返回 `422 base invalid`，因为远程当前只存在 `feature/tradelaw-ai-mvp` 分支，未发现可作为目标的 `main` 或 `master` 分支。创建远程默认分支后，可使用下方标题和描述直接创建 PR。
+状态：已创建 GitHub PR：`https://github.com/O2Level/tradelaw-ai/pull/1`。
+
+备注：远程仓库最初没有 `main`/`master` 分支。为创建 PR，已将正式 MVP build loop 前的文档基线提交 `3cc6832` 推送为 `main`，MVP 代码仍全部位于 `feature/tradelaw-ai-mvp` 并通过 PR 合入。
 
 描述要点：
 
@@ -54,4 +56,4 @@ npm run qa
 - 模型接入状态：OpenClaw adapter 已实现，默认本地规则兜底。
 - 测试：lint/test/build/e2e/qa 通过；Vitest 为 9 个测试文件、13 个测试。
 - 已知限制：不接入真实 CRM、信用数据库、制裁名单、负面舆情或真实聊天平台；Prisma migrate/db push 在本机 schema-engine 异常，当前使用可复现 SQLite DDL；Next build 有非阻塞 Turbopack 追踪警告。
-- 下一步建议：创建远程 `main` 默认分支后打开 PR，随后继续打磨工作台密度、报告排版和正式权限体系。
+- 下一步建议：查看 PR CI，随后继续打磨工作台密度、报告排版和正式权限体系。
