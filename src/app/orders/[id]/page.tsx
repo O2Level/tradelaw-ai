@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { importMaterialAction, scanOrderAction } from "@/app/actions";
+import { addEvidenceEventAction, importMaterialAction, saveReviewAction, scanOrderAction } from "@/app/actions";
 import { getOrderSpace } from "@/lib/order-queries";
 
 export const dynamic = "force-dynamic";
@@ -184,9 +184,117 @@ Purchase order without governing law or dispute resolution.`}
               <strong>复核状态：</strong>
               {risk.status}
             </p>
+            <form action={saveReviewAction} className="stack">
+              <input type="hidden" name="riskItemId" value={risk.id} />
+              <input type="hidden" name="orderId" value={order.id} />
+              <div className="form-grid">
+                <div className="field">
+                  <label htmlFor={`reviewerName-${risk.id}`}>复核人</label>
+                  <input id={`reviewerName-${risk.id}`} name="reviewerName" defaultValue="王法务" />
+                </div>
+                <div className="field">
+                  <label htmlFor={`reviewerRole-${risk.id}`}>角色</label>
+                  <input id={`reviewerRole-${risk.id}`} name="reviewerRole" defaultValue="法务" />
+                </div>
+                <div className="field">
+                  <label htmlFor={`decision-${risk.id}`}>处理意见</label>
+                  <select id={`decision-${risk.id}`} name="decision" defaultValue="REQUIRE_MODIFICATION">
+                    <option value="ACCEPT_RISK">接受风险</option>
+                    <option value="REQUIRE_MODIFICATION">要求修改</option>
+                    <option value="ADD_CLAUSE">补充条款</option>
+                    <option value="PAUSE_TRANSACTION">暂停交易</option>
+                    <option value="ESCALATE_TO_LAWYER">转律师处理</option>
+                  </select>
+                </div>
+              </div>
+              <div className="field">
+                <label htmlFor={`comment-${risk.id}`}>复核意见</label>
+                <textarea id={`comment-${risk.id}`} name="comment" required defaultValue="要求改为发货前付清尾款或凭提单副本付款。" />
+              </div>
+              <button className="button" type="submit">
+                保存复核意见
+              </button>
+            </form>
+            {risk.reviewDecisions.length > 0 ? (
+              <div>
+                <h3>复核记录</h3>
+                {risk.reviewDecisions.map((decision) => (
+                  <p key={decision.id}>
+                    v{decision.version} {decision.reviewerRole} {decision.reviewerName}: {decision.comment}
+                  </p>
+                ))}
+              </div>
+            ) : null}
           </article>
         ))}
         {order.riskItems.length === 0 ? <p className="muted">导入材料后点击风险扫描。</p> : null}
+      </section>
+
+      <section className="panel stack">
+        <h2>证据时间线</h2>
+        <form action={addEvidenceEventAction} className="stack">
+          <input type="hidden" name="orderId" value={order.id} />
+          <div className="form-grid">
+            <div className="field">
+              <label htmlFor="evidenceType">节点</label>
+              <select id="evidenceType" name="type" defaultValue="SHIPMENT">
+                <option value="SIGNING">签约</option>
+                <option value="PRODUCTION">生产</option>
+                <option value="INSPECTION">验货</option>
+                <option value="SHIPMENT">发货</option>
+                <option value="PAYMENT">收款</option>
+                <option value="OBJECTION">异议</option>
+                <option value="COLLECTION">催款</option>
+                <option value="OTHER">其他</option>
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor="eventDate">日期</label>
+              <input id="eventDate" name="eventDate" type="date" />
+            </div>
+            <div className="field">
+              <label htmlFor="evidenceTitle">标题</label>
+              <input id="evidenceTitle" name="title" defaultValue="发货通知与提单待补" required />
+            </div>
+            <div className="field">
+              <label htmlFor="proofTarget">证明对象</label>
+              <input id="proofTarget" name="proofTarget" defaultValue="证明卖方已按约发货并提示客户付款" required />
+            </div>
+          </div>
+          <div className="form-grid">
+            <div className="field">
+              <label htmlFor="uploadedMaterials">已上传材料</label>
+              <textarea id="uploadedMaterials" name="uploadedMaterials" defaultValue="PI, PO" />
+            </div>
+            <div className="field">
+              <label htmlFor="missingMaterials">缺失材料</label>
+              <textarea id="missingMaterials" name="missingMaterials" defaultValue="提单, 发货通知, 催款记录" />
+            </div>
+          </div>
+          <button className="button" type="submit">
+            保存证据节点
+          </button>
+        </form>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>节点</th>
+              <th>标题</th>
+              <th>证明对象</th>
+              <th>缺失材料</th>
+            </tr>
+          </thead>
+          <tbody>
+            {order.evidenceEvents.map((event) => (
+              <tr key={event.id}>
+                <td>{event.type}</td>
+                <td>{event.title}</td>
+                <td>{event.proofTarget}</td>
+                <td>{JSON.parse(event.missingMaterials).join("、")}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
     </div>
   );

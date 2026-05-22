@@ -70,6 +70,16 @@ export default async function RiskReportPage({ params }: { params: Promise<{ id:
               <strong>复核状态：</strong>
               {risk.status}
             </p>
+            {risk.reviewDecisions.length > 0 ? (
+              <div>
+                <strong>人工复核意见：</strong>
+                {risk.reviewDecisions.map((decision) => (
+                  <p key={decision.id}>
+                    v{decision.version} {decision.reviewerRole} {decision.reviewerName}: {decision.comment}
+                  </p>
+                ))}
+              </div>
+            ) : null}
           </article>
         ))}
       </section>

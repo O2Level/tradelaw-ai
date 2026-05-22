@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { recordAuditLog } from "@/lib/audit";
 import { prisma } from "@/lib/db";
 import { importTextMaterial, toMaterialType } from "@/lib/material-service";
+import { addEvidenceEvent, toEvidenceEventType } from "@/lib/evidence-service";
+import { saveReviewDecision, toReviewDecision } from "@/lib/review-service";
 import { scanOrderRisks } from "@/lib/scan-service";
 
 function readString(formData: FormData, key: string) {
@@ -57,4 +59,40 @@ export async function scanOrderAction(formData: FormData) {
   await scanOrderRisks(prisma, orderId, "业务员");
   revalidatePath(`/orders/${orderId}`);
   revalidatePath(`/orders/${orderId}/risk-report`);
+}
+
+export async function saveReviewAction(formData: FormData) {
+  const riskItemId = readString(formData, "riskItemId");
+  const orderId = readString(formData, "orderId");
+  await saveReviewDecision(prisma, {
+    riskItemId,
+    reviewerName: readString(formData, "reviewerName") || "默认复核人",
+    reviewerRole: readString(formData, "reviewerRole") || "法务",
+    decision: toReviewDecision(readString(formData, "decision")),
+    comment: readString(formData, "comment")
+  });
+  revalidatePath(`/orders/${orderId}`);
+  revalidatePath(`/orders/${orderId}/risk-report`);
+  revalidatePath("/review");
+}
+
+export async function addEvidenceEventAction(formData: FormData) {
+  const orderId = readString(formData, "orderId");
+  await addEvidenceEvent(prisma, {
+    orderId,
+    type: toEvidenceEventType(readString(formData, "type")),
+    title: readString(formData, "title"),
+    eventDate: readString(formData, "eventDate"),
+    uploadedMaterials: readString(formData, "uploadedMaterials")
+      .split(/\r?\n|,|，/)
+      .map((item) => item.trim())
+      .filter(Boolean),
+    missingMaterials: readString(formData, "missingMaterials")
+      .split(/\r?\n|,|，/)
+      .map((item) => item.trim())
+      .filter(Boolean),
+    proofTarget: readString(formData, "proofTarget"),
+    actorRole: "跟单"
+  });
+  revalidatePath(`/orders/${orderId}`);
 }

@@ -40,3 +40,17 @@ export async function listRules() {
     orderBy: { ruleId: "asc" }
   });
 }
+
+export async function listReviewQueue() {
+  return prisma.riskItem.findMany({
+    where: {
+      OR: [{ severity: "RED" }, { requiresHumanReview: true }, { riskType: { contains: "争议解决" } }]
+    },
+    orderBy: [{ severity: "desc" }, { createdAt: "desc" }],
+    include: {
+      order: true,
+      riskRule: true,
+      reviewDecisions: { orderBy: { createdAt: "desc" } }
+    }
+  });
+}
