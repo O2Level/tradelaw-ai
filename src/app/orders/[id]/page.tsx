@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { addEvidenceEventAction, exportReportAction, importMaterialAction, saveReviewAction, scanOrderAction } from "@/app/actions";
+import { getAiProviderStatus } from "@/lib/ai-provider";
 import { getOrderSpace } from "@/lib/order-queries";
 
 export const dynamic = "force-dynamic";
@@ -8,6 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function OrderSpacePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const order = await getOrderSpace(id);
+  const aiStatus = getAiProviderStatus();
   if (!order) {
     notFound();
   }
@@ -42,6 +44,11 @@ export default async function OrderSpacePage({ params }: { params: Promise<{ id:
           <span>复核状态</span>
           <strong>{order.reviewStatus}</strong>
         </div>
+      </section>
+
+      <section className="panel">
+        <strong>分析模式：</strong>
+        {aiStatus.mode === "AI_ENHANCED" ? `AI 增强分析（${aiStatus.provider}/${aiStatus.model}）` : "本地规则分析"}
       </section>
 
       <section className="panel">

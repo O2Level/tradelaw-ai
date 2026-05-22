@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getAiProviderStatus } from "@/lib/ai-provider";
 import { getOrderSpace } from "@/lib/order-queries";
 
 export const dynamic = "force-dynamic";
@@ -6,6 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function RiskReportPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const order = await getOrderSpace(id);
+  const aiStatus = getAiProviderStatus();
   if (!order) {
     notFound();
   }
@@ -15,6 +17,7 @@ export default async function RiskReportPage({ params }: { params: Promise<{ id:
       <h1 className="page-title">风险报告：{order.name}</h1>
       <section className="panel">
         <h2>风险总览</h2>
+        <p>分析模式：{aiStatus.mode === "AI_ENHANCED" ? `AI 增强分析（${aiStatus.provider}/${aiStatus.model}）` : "本地规则分析"}</p>
         <p>
           当前风险等级：<span className={`badge ${order.riskLevel}`}>{order.riskLevel}</span>
         </p>

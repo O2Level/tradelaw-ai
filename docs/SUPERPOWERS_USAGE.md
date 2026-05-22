@@ -40,3 +40,10 @@ Because no usable Superpowers CLI is available, the project will use Codex-loade
 
 - Code review will use available Codex/GitHub tooling or a manual review checklist if no subagent review path is available.
 - Final PR creation will prefer local GitHub tooling if it becomes available; otherwise the final handoff will include PR title, body, branch, and commit status.
+
+## Round 9 OpenClaw Boundary
+
+- OpenClaw was only treated as an environment-configured provider.
+- The project does not read, copy, parse, or commit `~/.openclaw/openclaw.json`.
+- Runtime AI configuration is limited to `.env` variables documented in `.env.example`.
+- If OpenClaw configuration is incomplete or a compatible API call fails, the UI remains usable in local rules mode.
