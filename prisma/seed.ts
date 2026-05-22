@@ -1,4 +1,5 @@
 import { prisma } from "../src/lib/db";
+import { seedRiskRules, serializeRequiredMaterials, serializeRuleTrigger } from "../src/lib/risk-rules";
 
 async function main() {
   await prisma.reviewer.upsert({
@@ -20,6 +21,37 @@ async function main() {
       summary: "Seeded default reviewer"
     }
   });
+
+  for (const rule of seedRiskRules) {
+    await prisma.riskRule.upsert({
+      where: { ruleId: rule.ruleId },
+      update: {
+        riskType: rule.riskType,
+        scenario: rule.scenario,
+        trigger: serializeRuleTrigger(rule.trigger),
+        severity: rule.severity,
+        businessExplanation: rule.businessExplanation,
+        suggestedRevision: rule.suggestedRevision,
+        requiredMaterials: serializeRequiredMaterials(rule.requiredMaterials),
+        requiresHumanReview: rule.requiresHumanReview,
+        source: rule.source,
+        lastUpdated: new Date(rule.lastUpdated)
+      },
+      create: {
+        ruleId: rule.ruleId,
+        riskType: rule.riskType,
+        scenario: rule.scenario,
+        trigger: serializeRuleTrigger(rule.trigger),
+        severity: rule.severity,
+        businessExplanation: rule.businessExplanation,
+        suggestedRevision: rule.suggestedRevision,
+        requiredMaterials: serializeRequiredMaterials(rule.requiredMaterials),
+        requiresHumanReview: rule.requiresHumanReview,
+        source: rule.source,
+        lastUpdated: new Date(rule.lastUpdated)
+      }
+    });
+  }
 }
 
 main()
