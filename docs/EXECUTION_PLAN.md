@@ -1,23 +1,25 @@
 # Execution Plan
 
-## Current Phase: Repository Verification Gate
+## Current Phase: MVP Build Loop Approved
 
-The product build loop is paused until the GitHub repository remote is confirmed.
+The GitHub repository remote has been confirmed and the MVP build loop is approved. Work must continue on `feature/tradelaw-ai-mvp`.
 
-Current priorities:
-1. Confirm whether `C:\Users\40621\Documents\Trade Law AI` is the intended GitHub project directory.
-2. Keep work limited to repository validation and planning documents if the directory is not a GitHub clone.
-3. Maintain the required branch name: `feature/tradelaw-ai-mvp`.
-4. Do not start large-scale product coding until a GitHub remote is configured and push readiness is verified.
+Current repository facts:
+1. Working directory: `C:\Users\40621\Documents\Trade Law AI`.
+2. Remote: `origin https://github.com/O2Level/tradelaw-ai.git`.
+3. Branch: `feature/tradelaw-ai-mvp`.
+4. Remote tracking branch: `origin/feature/tradelaw-ai-mvp`.
+5. Git push currently uses proxy `http://127.0.0.1:7890`.
+6. `docs/product/TradeLawAI-plan.docx` is parseable, so `PLAN_EXTRACT.md` is not required.
 
-## Gate To Start MVP Build
+## Execution Guardrails
 
-The formal MVP build loop may start only after all of the following are true:
-
-1. `git remote -v` shows the intended GitHub repository.
-2. The current branch is `feature/tradelaw-ai-mvp`.
-3. Push access is verified either through Git credentials, GitHub CLI, or the GitHub connector.
-4. `docs/product/TradeLawAI-plan.docx` remains present in the repository.
+1. Do not commit real API keys, tokens, cookies, or sensitive local configuration.
+2. Do not read, copy, or commit contents from `~/.openclaw/openclaw.json`; only record that OpenClaw config exists locally.
+3. Product AI configuration must only flow through `.env` and `.env.example`.
+4. If OpenClaw is unavailable, continue with the local rules engine.
+5. Do not add CRM, credit database, sanctions list, or real chat-platform integrations.
+6. Keep the five core loops first: order creation, material import, risk scan, human review, report export.
 
 ## Planned Build Loop After Gate Opens
 
@@ -65,4 +67,3 @@ npm run qa
 ```
 
 Failures must be fixed before moving to the next round. Passing status must not be claimed without fresh command output.
-
